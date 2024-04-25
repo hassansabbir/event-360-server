@@ -27,6 +27,9 @@ async function run() {
     // await client.connect();
 
     const serviceCollection = client.db("eventManDb").collection("services");
+    const eventItemsCollection = client
+      .db("eventManDb")
+      .collection("eventItems");
 
     //services collection
 
@@ -45,6 +48,20 @@ async function run() {
     app.post("/add-services", async (req, res) => {
       const result = await serviceCollection.insertOne(req.body);
       res.send(result);
+    });
+
+    //eventItems Collection
+
+    app.get("/eventItems", async (req, res) => {
+      try {
+        const result = await eventItemsCollection.find().toArray();
+        res.status(httpStatus.OK).send({ success: true, data: result });
+      } catch (error) {
+        console.error("Error fetching services:", error);
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ success: false, message: "Internal server error" });
+      }
     });
 
     // Send a ping to confirm a successful connection
