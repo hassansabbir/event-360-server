@@ -30,6 +30,7 @@ async function run() {
     const eventItemsCollection = client
       .db("eventManDb")
       .collection("eventItems");
+    const packagesCollection = client.db("eventManDb").collection("packages");
 
     //services collection
 
@@ -55,6 +56,20 @@ async function run() {
     app.get("/eventItems", async (req, res) => {
       try {
         const result = await eventItemsCollection.find().toArray();
+        res.status(httpStatus.OK).send({ success: true, data: result });
+      } catch (error) {
+        console.error("Error fetching services:", error);
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ success: false, message: "Internal server error" });
+      }
+    });
+
+    //packages Collection
+
+    app.get("/packages", async (req, res) => {
+      try {
+        const result = await packagesCollection.find().toArray();
         res.status(httpStatus.OK).send({ success: true, data: result });
       } catch (error) {
         console.error("Error fetching services:", error);
