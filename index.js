@@ -34,7 +34,7 @@ async function run() {
     const reviewCollection = client.db("eventManDb").collection("reviews");
     const recentEventCollection = client
       .db("eventManDb")
-      .collection("recent-event");
+      .collection("recentEvents");
 
     //services collection
 
