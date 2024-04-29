@@ -113,6 +113,27 @@ async function run() {
       }
     });
 
+    app.get("/recent-event/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await recentEventCollection.findOne(query);
+
+        if (!result) {
+          res
+            .status(httpStatus.NOT_FOUND)
+            .send({ success: false, message: "Event not found" });
+          return;
+        }
+        res.status(httpStatus.OK).send({ success: true, data: result });
+      } catch (error) {
+        console.error("Error fetching event:", error);
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ success: false, message: "Internal server error" });
+      }
+    });
+
     app.post("/recent-event", async (req, res) => {
       const result = await recentEventCollection.insertOne(req.body);
       res.send(result);
@@ -128,6 +149,34 @@ async function run() {
       };
       const result = await recentEventCollection.updateOne(filter, updateDoc);
       res.send(result);
+    });
+
+    app.patch("/full-recent-event/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const replacementDoc = req.body;
+        const result = await recentEventCollection.replaceOne(
+          filter,
+          replacementDoc
+        );
+
+        if (result.matchedCount === 0) {
+          res
+            .status(httpStatus.NOT_FOUND)
+            .send({ success: false, message: "Event not found" });
+          return;
+        }
+
+        res
+          .status(httpStatus.OK)
+          .send({ success: true, message: "Event updated successfully" });
+      } catch (error) {
+        console.error("Error updating event:", error);
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ success: false, message: "Internal server error" });
+      }
     });
 
     // Send a ping to confirm a successful connection
