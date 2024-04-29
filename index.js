@@ -69,6 +69,11 @@ async function run() {
       }
     });
 
+    app.post("/eventItems", async (req, res) => {
+      const result = await eventItemsCollection.insertOne(req.body);
+      res.send(result);
+    });
+
     //packages Collection
 
     app.get("/packages", async (req, res) => {
