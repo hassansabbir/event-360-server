@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const httpStatus = require("http-status");
 const uri = `mongodb+srv://eventAdmin:nrzZicSVQSaHKvUD@cluster0.5ymoa2u.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -101,7 +101,9 @@ async function run() {
 
     app.get("/recent-event", async (req, res) => {
       try {
-        const result = await recentEventCollection.find().toArray();
+        const result = await recentEventCollection
+          .find({ status: "onAir" })
+          .toArray();
         res.status(httpStatus.OK).send({ success: true, data: result });
       } catch (error) {
         console.error("Error fetching services:", error);
@@ -109,6 +111,23 @@ async function run() {
           .status(httpStatus.INTERNAL_SERVER_ERROR)
           .send({ success: false, message: "Internal server error" });
       }
+    });
+
+    app.post("/recent-event", async (req, res) => {
+      const result = await recentEventCollection.insertOne(req.body);
+      res.send(result);
+    });
+
+    app.patch("/recent-event/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: "offAir",
+        },
+      };
+      const result = await recentEventCollection.updateOne(filter, updateDoc);
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
