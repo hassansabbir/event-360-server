@@ -59,7 +59,9 @@ async function run() {
 
     app.get("/eventItems", async (req, res) => {
       try {
-        const result = await eventItemsCollection.find().toArray();
+        const result = await eventItemsCollection
+          .find({ status: "onAir" })
+          .toArray();
         res.status(httpStatus.OK).send({ success: true, data: result });
       } catch (error) {
         console.error("Error fetching services:", error);
