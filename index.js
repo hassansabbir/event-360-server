@@ -40,7 +40,9 @@ async function run() {
 
     app.get("/services", async (req, res) => {
       try {
-        const result = await serviceCollection.find().toArray();
+        const result = await serviceCollection
+          .find({ status: "onAir" })
+          .toArray();
         res.status(httpStatus.OK).send({ success: true, data: result });
       } catch (error) {
         console.error("Error fetching services:", error);
