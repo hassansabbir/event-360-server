@@ -97,6 +97,34 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/new-eventItems/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const replacementDoc = req.body;
+        const result = await eventItemsCollection.replaceOne(
+          filter,
+          replacementDoc
+        );
+
+        if (result.matchedCount === 0) {
+          res
+            .status(httpStatus.NOT_FOUND)
+            .send({ success: false, message: "Event not found" });
+          return;
+        }
+
+        res
+          .status(httpStatus.OK)
+          .send({ success: true, message: "Event updated successfully" });
+      } catch (error) {
+        console.error("Error updating event:", error);
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ success: false, message: "Internal server error" });
+      }
+    });
+
     app.patch("/eventItems/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
