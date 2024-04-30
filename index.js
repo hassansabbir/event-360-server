@@ -55,6 +55,18 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: "offAir",
+        },
+      };
+      const result = await serviceCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     //eventItems Collection
 
     app.get("/eventItems", async (req, res) => {
