@@ -71,6 +71,27 @@ async function run() {
       }
     });
 
+    app.get("/eventItems/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await eventItemsCollection.findOne(query);
+
+        if (!result) {
+          res
+            .status(httpStatus.NOT_FOUND)
+            .send({ success: false, message: "Event not found" });
+          return;
+        }
+        res.status(httpStatus.OK).send({ success: true, data: result });
+      } catch (error) {
+        console.error("Error fetching event:", error);
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ success: false, message: "Internal server error" });
+      }
+    });
+
     app.post("/eventItems", async (req, res) => {
       const result = await eventItemsCollection.insertOne(req.body);
       res.send(result);
