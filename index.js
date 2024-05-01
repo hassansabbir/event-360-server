@@ -97,7 +97,7 @@ async function run() {
             .send({ success: false, message: "Event not found" });
           return;
         }
-        res.status(httpStatus.OK).send({ success: true, data: result });
+        res.status(httpStatus.OK).send(result);
       } catch (error) {
         console.error("Error fetching event:", error);
         res
@@ -207,7 +207,7 @@ async function run() {
             .send({ success: false, message: "Event not found" });
           return;
         }
-        res.status(httpStatus.OK).send({ success: true, data: result });
+        res.status(httpStatus.OK).send(result);
       } catch (error) {
         console.error("Error fetching event:", error);
         res
