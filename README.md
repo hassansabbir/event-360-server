@@ -1,4 +1,4 @@
-## Live Link: https://nlwd-b2-assignment-5-server.vercel.app/
+## Live Link: https://event-manager365.netlify.app/ 
 
 This is Event Management Server side. This simple server site was build by Express.js and MongoDb was used as a database.
 
